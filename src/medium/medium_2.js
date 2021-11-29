@@ -106,8 +106,8 @@ export function transform(obj){
 export function transform1(obj){
     Object.keys(obj).reduce(
         function(acc,key){
-            return {...acc, key: {"hybrid": {"city":obj.hybrid.city/(obj.hybrid.count||1),"highway":obj.hybrid.highway/(obj.hybrid.count||1)},
-                                "notHybrid":{"city":obj.notHybrid.city/(obj.notHybrid.count||1),"highway":obj.notHybrid.highway/(obj.notHybrid.count||1)}}}
+            return {...acc, key: {"hybrid": {"city":obj[key].hybrid.city/(obj[key].hybrid.count||1),"highway":obj[key].hybrid.highway/(obj[key].hybrid.count||1)},
+                                "notHybrid":{"city":obj[key].notHybrid.city/(obj[key].notHybrid.count||1),"highway":obj[key].notHybrid.highway/(obj[key].notHybrid.count||1)}}}
         },{});
 }
 
