@@ -19,11 +19,16 @@ see under the methods section
  *
  * @param {allCarStats.ratioHybrids} ratio of cars that are hybrids
  */
+
+function avgOut(obj){
+    obj.city=obj.city/mpg_data.length;
+    obj.highway= obj.highway/mpg_data.length;
+}
 export const allCarStats = {
-    avgMpg: mpg_data.reduce(
+    avgMpg: avgOut(mpg_data.reduce(
         function (freq,currObj){
-            return {...freq , 'city':(freq['city']||0)+currObj.city_mpg/mpg_data.length, 'highway': (freq['highway'] || 0)+currObj.highway_mpg/mpg_data.length};
-        }, {}),
+            return {...freq , 'city':(freq['city']||0)+currObj.city_mpg, 'highway': (freq['highway'] || 0)+currObj.highway_mpg};
+        }, {})),
     allYearStats: getStatistics (mpg_data.reduce(
         function (acc, currObj){
             return [...acc, currObj.year]
