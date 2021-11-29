@@ -22,7 +22,7 @@ see under the methods section
 export const allCarStats = {
     avgMpg: mpg_data.reduce(
         function (freq,currObj){
-            return {...freq , 'highway': (freq['highway'] || 0)+currObj.highway_mpg/mpg_data.length, 'city':freq['city']+currObj.city_mpg/mpg_data.length};
+            return {...freq , 'city':(freq['city']||0)+currObj.city_mpg/mpg_data.length, 'highway': (freq['highway'] || 0)+currObj.highway_mpg/mpg_data.length};
         }, {}),
     allYearStats: getStatistics (mpg_data.reduce(
         function (acc, currObj){
