@@ -113,7 +113,7 @@ export function transform(obj){
 export function transform1(obj){
    return Object.keys(obj).reduce(
         function(acc,key){
-            return {...acc, key: {"hybrid": {"city":obj[key].hybrid.city/(obj[key].hybrid.count||1),"highway":obj[key].hybrid.highway/(obj[key].hybrid.count||1)},
+            return {...acc, [key]: {"hybrid": {"city":obj[key].hybrid.city/(obj[key].hybrid.count||1),"highway":obj[key].hybrid.highway/(obj[key].hybrid.count||1)},
                                 "notHybrid":{"city":obj[key].notHybrid.city/(obj[key].notHybrid.count||1),"highway":obj[key].notHybrid.highway/(obj[key].notHybrid.count||1)}}}
         },{});
 
@@ -123,7 +123,7 @@ export const moreStats = {
     makerHybrids: transform(mpg_data.reduce(
         function(makes,currObj){
             if(currObj.hybrid)
-                return {...makes, [currObj.make]: [...(makes[currObj.make] || []),currObj.id] };
+                return {...makes, [currObj.make]: (makes[currObj.make] || []).push(currObj.id) };
             return makes;
         },{})),
     avgMpgByYearAndHybrid:transform1(mpg_data.reduce(
