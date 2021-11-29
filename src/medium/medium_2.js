@@ -20,9 +20,21 @@ see under the methods section
  * @param {allCarStats.ratioHybrids} ratio of cars that are hybrids
  */
 export const allCarStats = {
-    avgMpg: undefined,
-    allYearStats: undefined,
-    ratioHybrids: undefined,
+    avgMpg: mpg_data.reduce(
+        function (freq,currObj){
+            return {...freq , 'highway': (freq['highway'] || 0)+currObj.highway_mpg/mpg_data.length, 'city':freq['city']+currObj.city_mpg/mpg_data.length};
+        }, {}),
+    allYearStats: getStatistics (mpg_data.reduce(
+        function (acc, currObj){
+            return [...acc, currObj.year]
+        }, [])),
+    ratioHybrids: mpg_data.reduce(
+        function(acc,currObj){
+            if(currObj.hybrid){
+                acc+=1;
+            }
+            return acc;
+        }, 0)/mpg_data.length,
 };
 
 
@@ -83,7 +95,52 @@ export const allCarStats = {
  *
  * }
  */
+
+export function transform(obj){
+    Object.keys(obj).reduce(
+        function(acc,currKey){
+            return [...acc, {"make":currKey,"hybrids":obj[currKey]}]
+        },[]).sort((a,b)=>b.hybrids.length-a.hybrids.length);
+}
+
+export function transform1(obj){
+    Object.keys(obj).reduce(
+        function(acc,key){
+            return {...acc, key: {"hybrid": {"city":obj.hybrid.city/(obj.hybrid.count||1),"highway":obj.hybrid.highway/(obj.hybrid.count||1)},
+                                "notHybrid":{"city":obj.notHybrid.city/(obj.notHybrid.count||1),"highway":obj.notHybrid.highway/(obj.notHybrid.count||1)}}}
+        },{});
+}
+
 export const moreStats = {
-    makerHybrids: undefined,
-    avgMpgByYearAndHybrid: undefined
+    makerHybrids: transform(mpg_data.reduce(
+        function(makes,currObj){
+            if(currObj.hybrid)
+                return {...makes, [currObj.make]: [...(makes[currObj.make] || []),currObj.id] };
+            return makes;
+        },{})),
+    avgMpgByYearAndHybrid:transform1(mpg_data.reduce(
+        function(acc, currObj){
+            if(currObj.hybrid){
+                return {...acc, [currObj.year]:{
+                    "hybrid":{
+                        "city":((acc[currObj.year] && acc[currObj.year].hybrid && acc[currObj.year].hybrid.city)?acc[currObj.year].hybrid.city:0) + currObj.city_mpg,
+                        "highway":((acc[currObj.year] && acc[currObj.year].hybrid && acc[currObj.year].hybrid.highway)?acc[currObj.year].hybrid.highway:0) + currObj.highway_mpg,
+                        "count":((acc[currObj.year] && acc[currObj.year].hybrid && acc[currObj.year].hybrid.count)?acc[currObj.year].hybrid.count:0) +1
+                    },
+                    "notHybrid": (acc[currObj.year] && acc[currObj.year].notHybrid)?acc[currObj.year].notHybrid: {"city":0,"highway":0,"count":0}
+                }
+            }
+            }
+            else{
+                return {...acc, [currObj.year]:{
+                    "hybrid": (acc[currObj.year] && acc[currObj.year].hybrid)?acc[currObj.year].hybrid: {"city":0,"highway":0,"count":0},
+                    "notHybrid":{
+                        "city":((acc[currObj.year] && acc[currObj.year].notHybrid && acc[currObj.year].notHybrid.city)?acc[currObj.year].notHybrid.city:0) + currObj.city_mpg,
+                        "highway":((acc[currObj.year] && acc[currObj.year].notHybrid && acc[currObj.year].notHybrid.highway)?acc[currObj.year].notHybrid.highway:0) + currObj.highway_mpg,
+                        "count":((acc[currObj.year] && acc[currObj.year].notHybrid && acc[currObj.year].notHybrid.count)?acc[currObj.year].notHybrid.count:0) +1
+                    }
+                }
+            }
+            }
+        }, {})),
 };
