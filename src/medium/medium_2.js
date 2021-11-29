@@ -23,6 +23,8 @@ see under the methods section
 function avgOut(obj){
     obj.city=obj.city/mpg_data.length;
     obj.highway= obj.highway/mpg_data.length;
+
+    return obj;
 }
 export const allCarStats = {
     avgMpg: avgOut(mpg_data.reduce(
