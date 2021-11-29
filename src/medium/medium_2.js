@@ -104,18 +104,19 @@ export const allCarStats = {
  */
 
 export function transform(obj){
-    Object.keys(obj).reduce(
+    return Object.keys(obj).reduce(
         function(acc,currKey){
             return [...acc, {"make":currKey,"hybrids":obj[currKey]}]
         },[]).sort((a,b)=>b.hybrids.length-a.hybrids.length);
 }
 
 export function transform1(obj){
-    Object.keys(obj).reduce(
+   return Object.keys(obj).reduce(
         function(acc,key){
             return {...acc, key: {"hybrid": {"city":obj[key].hybrid.city/(obj[key].hybrid.count||1),"highway":obj[key].hybrid.highway/(obj[key].hybrid.count||1)},
                                 "notHybrid":{"city":obj[key].notHybrid.city/(obj[key].notHybrid.count||1),"highway":obj[key].notHybrid.highway/(obj[key].notHybrid.count||1)}}}
         },{});
+
 }
 
 export const moreStats = {
