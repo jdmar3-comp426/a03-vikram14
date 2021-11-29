@@ -123,7 +123,7 @@ export const moreStats = {
     makerHybrids: transform(mpg_data.reduce(
         function(makes,currObj){
             if(currObj.hybrid)
-                return {...makes, [currObj.make]: (makes[currObj.make] || []).push(currObj.id) };
+                return {...makes, [currObj.make]: (makes[currObj.make]?[...makes[currObj.make], currObj.id] :[currObj.id]) };
             return makes;
         },{})),
     avgMpgByYearAndHybrid:transform1(mpg_data.reduce(
